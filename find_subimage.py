@@ -24,23 +24,13 @@ import os
 
 
 def find_subimages(primary, subimage, confidence=0.99):
-  #result = np.zeros(primary.shape)
-  #correlation = signal.correlate2d(primary, subimage)#, mode='full', boundary='fill', fillvalue=0)
-  #return correlation
+  primary_edges = cv2.Canny(primary, 32, 128, apertureSize=3)
+  #cv2.imwrite('primary_edges.png', primary_edges)
+  subimage_edges = cv2.Canny(subimage, 32,128, apertureSize=3)
+  #cv2.imwrite('subimage_edges.png', subimage_edges)
 
-  result = cv2.matchTemplate(primary, subimage, cv2.TM_CCOEFF_NORMED)
-  #print 'peak value of ' + str(result.argmax())
+  result = cv2.matchTemplate(primary_edges, subimage_edges, cv2.TM_CCOEFF_NORMED)
   (y, x) = np.unravel_index(result.argmax(),result.shape)
-  #print 'at ' + str(x) + ',' +str(y)
-
-  #result = cv2.matchTemplate(primary, subimage, cv2.TM_CCOEFF_NORMED)
-  #print np.unravel_index(result.argmax(),result.shape)
-  #confidence = 0.80
-  #maximum = result.argmax()
-  #threshold = maximum*confidence
-  match_indices = np.arange(result.size)[(result>confidence).flatten()]
-  #print str((result>0.99)==True)
-  #print str(np.unravel_index(match_indices,result.shape))
 
   result[result>=confidence]=1.0
   result[result<confidence]=0.0
@@ -77,9 +67,6 @@ def draw_bounding_boxes(img,connected_components,max_size=0,min_size=0,color=(25
   for component in connected_components:
     if min_size > 0 and area_bb(component)**0.5<min_size: continue
     if max_size > 0 and area_bb(component)**0.5>max_size: continue
-    #a = area_nz(component,img)
-    #if a<min_size: continue
-    #if a>max_size: continue
     (ys,xs)=component[:2]
     cv2.rectangle(img,(xs.start,ys.start),(xs.stop,ys.stop),color,line_size)
 
@@ -97,18 +84,9 @@ def  find_subimages_from_files(primary_image_filename, subimage_filename, confid
   (running separately on each channel and combining the cross correlations?) is probably
   necessary.  
   '''
-  primary = sp.imread(primary_image_filename, flatten=True)
-  subimage = sp.imread(subimage_filename, flatten=True)
+  primary = cv2.imread(primary_image_filename, cv2.CV_LOAD_IMAGE_GRAYSCALE)
+  subimage = cv2.imread(subimage_filename, cv2.CV_LOAD_IMAGE_GRAYSCALE)
   return find_subimages(primary, subimage, confidence)
-'''
-def superimpose_bounding_box(filename_in, filename_out, x, y, w, h, color=(255,0,0), line_size=1):
-  if not os.path.isfile(filename_in):
-    return
-  infile = sp.imread(primary_image_filename
-  img = sp.imread(filename_in)
-  cv2.rectangle(img,(x,y),(x+w, y+h),color,line_size)
-  misc.imsave(filename_out,img)
-'''
 
 
 def main(): 
