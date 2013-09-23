@@ -23,7 +23,7 @@ import argparse
 import os
 
 
-def find_subimages(primary, subimage, confidence=0.99):
+def find_subimages(primary, subimage, confidence=0.80):
   primary_edges = cv2.Canny(primary, 32, 128, apertureSize=3)
   #cv2.imwrite('primary_edges.png', primary_edges)
   subimage_edges = cv2.Canny(subimage, 32,128, apertureSize=3)
@@ -98,7 +98,7 @@ def main():
   parser.add_argument('-v','--verbose', help='Verbose operation. Print status messages during processing', action="store_true")
   #parser.add_argument('--display', help='Display output using OPENCV api and block program exit.', action="store_true")
   parser.add_argument('-d','--debug', help='Overlay input image into output.', action="store_true")
-  parser.add_argument('--confidence', help='Confidence level for matching subimages.',type=float, default=0.99)
+  parser.add_argument('--confidence', help='Confidence level for matching subimages.',type=float, default=0.80)
   #parser.add_argument('--binary_threshold', help='Binarization threshold value from 0 to 255.',type=float,default=defaults.BINARY_THRESHOLD)
   #parser.add_argument('--additional_filtering', help='Attempt to filter false text positives by histogram processing.', action="store_true")
   
