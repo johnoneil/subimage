@@ -11,7 +11,7 @@ DATE: Saturday, Sept 21st 2014
   that match a given aspect ratio.
 
   Typical usage:
-  ./find_by_ar.py poker.jpg --aspect 0.7 --confidence 0.018 -d -v 
+  ./find_by_ar.py poker.jpg --aspect 0.7 --error 0.018 -d -v 
   
 """
 
@@ -25,7 +25,7 @@ import sys
 import argparse
 import os
 
-def find_by_ar(img, ar, confidence,min_height=50,min_width=50):
+def find_by_ar(img, ar, error, min_height=50,min_width=50):
   #(t,binary) = cv2.threshold(img, 128, 255, cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
   (t,binary) = cv2.threshold(img, 128, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
   kernel = cv2.getStructuringElement(cv2.MORPH_CROSS,(3,3))
@@ -38,7 +38,7 @@ def find_by_ar(img, ar, confidence,min_height=50,min_width=50):
     (x, y, w, h)=cc_shape(cc)
     if h<=0:return None
     aspect = float(w)/float(h)
-    if aspect > ar-confidence and aspect < ar+confidence and w>=min_width and h>=min_width:
+    if aspect > ar-error and aspect < ar+error and w>=min_width and h>=min_width:
       aoi.append(cc)
 
   return aoi
@@ -68,9 +68,9 @@ def save_output(infile, outfile, connected_components):
   draw_bounding_boxes(img, connected_components)
   misc.imsave(outfile, img) 
 
-def  find_by_ar_from_files(infile, ar, confidence):
+def  find_by_ar_from_files(infile, ar, error):
   img = cv2.imread(infile, cv2.CV_LOAD_IMAGE_GRAYSCALE)
-  return find_by_ar(img, ar, confidence)
+  return find_by_ar(img, ar, error)
 
 
 def main():
@@ -96,7 +96,7 @@ def main():
     print 'Processing primary input file ' + infile + '.'
     print 'Generating output ' + outfile
 
-  image_locations = find_by_ar_from_files(infile, args.aspect, args.confidence)
+  image_locations = find_by_ar_from_files(infile, args.aspect, args.error)
   if image_locations:
     if args.verbose:
       print str(len(image_locations)) + ' components of appropriate aspect ratio found.'
