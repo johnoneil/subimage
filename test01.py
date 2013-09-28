@@ -59,24 +59,13 @@ def main():
   if not cards:
     print 'Sorry, couldn\'t find any cards in the provided image.'
     sys.error(-1)
-  #tester = False
   for card in cards:
-    (x, y, w, h)=ar.cc_shape(card)
     #try to find what suit this card is
-    #print str(img[card]>0)
-    subsection = img[card]
-    #There's a bug here (well, design flaw) whereby image subsections are being carried
-    #around as connected components, but they need to be carried around as images, where
-    #non-cc pixels are zeroed out or something. Needs work.
-    #if not tester:
-    #  cv2.imwrite('debug.png',subsection)
-    #  tester = True
-    #  for s in card:
-    #    print s
-    #print str(subsection)
+    subsection = img[card.box]
+    subsection = subsection * card.mask
     suit = get_suit(subsection)
     value = get_value(subsection)
-    print 'Card found at ' + str(x) +','+ str(y)+': ' + suit + ' ' + value 
+    print 'Card found at ' + str(card.x) +','+ str(card.y)+': ' + suit + ' ' + value 
 
 
 if __name__ == '__main__':

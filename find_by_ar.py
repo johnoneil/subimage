@@ -25,22 +25,32 @@ import sys
 import argparse
 import os
 
+class ConnectedComponent(object):
+  def __init__(self, slices, mask):
+    self.box = slices
+    self.mask = mask
+    (x, y, w, h) = cc_shape(slices)
+    self.x = x
+    self.y = y
+    self.w = w
+    self.h = h
+    
+
 def find_by_ar(img, ar, error, min_height=50,min_width=50):
   #(t,binary) = cv2.threshold(img, 128, 255, cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
   (t,binary) = cv2.threshold(img, 128, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
-  kernel = cv2.getStructuringElement(cv2.MORPH_CROSS,(3,3))
+  kernel = cv2.getStructuringElement(cv2.MORPH_CROSS,(2,2))
   binary = cv2.erode(binary, kernel)
   ccs = get_connected_components(binary)
-  #if args.debug:
-  #  cv2.imwrite('binary.png', binary)
+  masks = get_cc_masks(binary)
+
   aoi = []
-  for cc in ccs:
+  for i,cc in enumerate(ccs):
     (x, y, w, h)=cc_shape(cc)
     if h<=0:return None
     aspect = float(w)/float(h)
     if aspect > ar-error and aspect < ar+error and w>=min_width and h>=min_width:
-      aoi.append(cc)
-
+      aoi.append(ConnectedComponent(cc, masks[i]))
   return aoi
 
 def cc_shape(component):
@@ -50,18 +60,32 @@ def cc_shape(component):
   h = component[0].stop-y
   return (x, y, w, h)
 
+def get_cc_masks(image):
+  s = sp.morphology.generate_binary_structure(2,2)
+  labels,n = sp.measurements.label(image)#,structure=s)
+  objects = sp.measurements.find_objects(labels)
+  masks = []
+  for i,obj in enumerate(objects):
+    mask = labels[obj]==(i+1)
+    mask = sp.morphology.binary_fill_holes(mask)#, structure=None, output=None, origin=0)
+    masks.append(mask)
+  if len(masks)<1:
+    return None
+  return masks  
+
 def get_connected_components(image):
   s = sp.morphology.generate_binary_structure(2,2)
   labels,n = sp.measurements.label(image)#,structure=s)
   objects = sp.measurements.find_objects(labels)
   return objects
 
-def draw_bounding_boxes(img,connected_components,max_size=0,min_size=0,color=(255,0,0),line_size=2):
+def draw_bounding_boxes(img,connected_components,color=(255,0,0),line_size=2):
   for component in connected_components:
-    if min_size > 0 and area_bb(component)**0.5<min_size: continue
-    if max_size > 0 and area_bb(component)**0.5>max_size: continue
-    (ys,xs)=component[:2]
-    cv2.rectangle(img,(xs.start,ys.start),(xs.stop,ys.stop),color,line_size)
+    x = component.x
+    y = component.y
+    w = component.w
+    h = component.h
+    cv2.rectangle(img,(x, y), (x+w, y+h), color, line_size)
 
 def save_output(infile, outfile, connected_components):
   img = sp.imread(infile)
