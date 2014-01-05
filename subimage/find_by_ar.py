@@ -100,17 +100,16 @@ def  find_by_ar_from_files(infile, ar, error):
 def main():
   parser = argparse.ArgumentParser(description='Segment raw Manga scan image.')
   parser.add_argument('infile', help='Input primary image in which we will examine.')
-  #parser.add_argument('-o','--output', dest='outfile', help='Output image.')
+  parser.add_argument('-o','--output', help='Output image.', type=str, default=None)
   parser.add_argument('-v','--verbose', help='Verbose operation. Print status messages during processing', action="store_true")
-  #parser.add_argument('--display', help='Display output using OPENCV api and block program exit.', action="store_true")
   parser.add_argument('-d','--debug', help='Overlay input image into output.', action="store_true")
   parser.add_argument('--aspect', help='Aspect ratio of components of interest. Width divided by height.',type=float, default=0.5)
   parser.add_argument('--error', help='Error threshold for passable aspect ratio.', type=float, default = 0.1)
-  #parser.add_argument('--binary_threshold', help='Binarization threshold value from 0 to 255.',type=float,default=defaults.BINARY_THRESHOLD)
-  #parser.add_argument('--additional_filtering', help='Attempt to filter false text positives by histogram processing.', action="store_true")
   args = parser.parse_args()
   infile = args.infile
   outfile = infile + '.locations.png'
+  if args.output:
+    outfile = args.output
 
   if not os.path.isfile(infile):
     print 'Please provide a regular existing input files. Use -h option for help.'

@@ -25,9 +25,7 @@ import os
 
 def find_subimages(primary, subimage, confidence=0.80):
   primary_edges = cv2.Canny(primary, 32, 128, apertureSize=3)
-  #cv2.imwrite('primary_edges.png', primary_edges)
   subimage_edges = cv2.Canny(subimage, 32,128, apertureSize=3)
-  #cv2.imwrite('subimage_edges.png', subimage_edges)
 
   result = cv2.matchTemplate(primary_edges, subimage_edges, cv2.TM_CCOEFF_NORMED)
   (y, x) = np.unravel_index(result.argmax(),result.shape)
@@ -38,7 +36,6 @@ def find_subimages(primary, subimage, confidence=0.80):
   ccs = get_connected_components(result)
   return correct_bounding_boxes(subimage, ccs)  
 
-  #return result
 
 def cc_shape(component):
   x = component[1].start
@@ -93,20 +90,16 @@ def main():
   parser = argparse.ArgumentParser(description='Segment raw Manga scan image.')
   parser.add_argument('image', help='Input primary image in which we look for subimages.')
   parser.add_argument('subimage', help='Subimage instances of which will be found in primary image.')
-  #parser.add_argument('-o','--output', dest='outfile', help='Output image.')
-  #parser.add_argument('-m','--mask', dest='mask', default=None, help='Output (binary) mask for non-graphical regions.')
-  parser.add_argument('-v','--verbose', help='Verbose operation. Print status messages during processing', action="store_true")
-  #parser.add_argument('--display', help='Display output using OPENCV api and block program exit.', action="store_true")
+  parser.add_argument('-o','--output', help='Filename for output image to generate', type=str, default='correlations.png')
+  parser.add_argument('-v','--verbose', help='Verbose operation. Spin detected image coordinates to command line', action="store_true")
   parser.add_argument('-d','--debug', help='Overlay input image into output.', action="store_true")
   parser.add_argument('--confidence', help='Confidence level for matching subimages.',type=float, default=0.80)
-  #parser.add_argument('--binary_threshold', help='Binarization threshold value from 0 to 255.',type=float,default=defaults.BINARY_THRESHOLD)
-  #parser.add_argument('--additional_filtering', help='Attempt to filter false text positives by histogram processing.', action="store_true")
   
   args = parser.parse_args()
   
   primary_image_filename = args.image
   subimage_filename = args.subimage
-  #binary_outfile = infile + '.binary.png'
+  outfile = args.output
 
   if not os.path.isfile(primary_image_filename) or not os.path.isfile(subimage_filename):
     print 'Please provide a regular existing input files. Use -h option for help.'
@@ -114,31 +107,15 @@ def main():
 
   if args.verbose:
     print '\tProcessing primary input file ' + primary_image_filename + ' and subimage file ' + primary_image_filename + '.'
-    #print '\tGenerating output ' + outfile
+    print '\tGenerating output ' + outfile
 
-  #segmented = segment_image_file(infile)
-  image_locations = find_subimages_from_files(primary_image_filename, subimage_filename,confidence=args.confidence)
-  #print str(image_locations)
-  #superimpose_bounding_box(
+  image_locations = find_subimages_from_files(primary_image_filename, subimage_filename,confidence=args.confidence,)
 
-  #misc.imsave('correlations.png',image_locations)
-  save_output(primary_image_filename, 'correlations.png', image_locations)
+  save_output(primary_image_filename, outfile, image_locations)
 
-  #print str(image_locations)
-
-  #imsave(outfile,segmented)
-  #cv2.imwrite(outfile,segmented)
-  #if binary is not None:
-  #  cv2.imwrite(binary_outfile, binary)
-  
-  #if arg.boolean_value('display'):
-  #  cv2.imshow('Segmented', segmented)
-  #  #cv2.imshow('Cleaned',cleaned)
-  #  #if args.mask is not None:
-  #  #  cv2.imshow('Mask',mask)
-  #  if cv2.waitKey(0) == 27:
-  #    cv2.destroyAllWindows()
-  #  cv2.destroyAllWindows()
+  if args.verbose:
+    print 'Instances of subimage {subimage} in primary image {primary} were found at:'.format(subimage=subimage_filename, primary=primary_image_filename)
+    print str(image_locations)
 
 if __name__ == '__main__':
   main()
