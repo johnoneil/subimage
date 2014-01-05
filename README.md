@@ -8,11 +8,9 @@ Package has dependencies upon python packages numpy, scipy, opencv (cv2) and arg
 
 Installation
 ============
-To install, clone the git repository, and run the setup.py script as usual:
+To install, point pip to this github:
 ```
-git clone https://github.com/johnoneil/subimage
-cd subimage
-python setup.py install
+pip install git+https://github.com/johnoneil/subimage
 ```
 
 Command Line Tools
