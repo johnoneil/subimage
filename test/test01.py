@@ -12,8 +12,8 @@ DATE: Saturday, Sept 21st 2014
 
 """
 
-import find_by_ar as ar
-import find_subimage as si
+import subimage.find_by_ar as ar
+import subimage.find_subimage as si
 import cv2
 
 def contains_subimage(img, subimage_filename):
@@ -24,37 +24,37 @@ def contains_subimage(img, subimage_filename):
   return False
 
 def get_suit(img):
-  if contains_subimage(img, './test/heart.png'):
+  if contains_subimage(img, 'heart.png'):
     return 'heart'
-  if contains_subimage(img, './test/diamond.png'):
+  if contains_subimage(img, 'diamond.png'):
     return 'diamond'
-  if contains_subimage(img, './test/club.png'):
+  if contains_subimage(img, 'club.png'):
     return 'club'
-  if contains_subimage(img, './test/spade.png'):
+  if contains_subimage(img, 'spade.png'):
     return 'spade'
   return 'unknown'
 
 def get_value(img):
-  if contains_subimage(img, './test/2.png'):
+  if contains_subimage(img, '2.png'):
     return '2'
-  if contains_subimage(img, './test/6.png'):
+  if contains_subimage(img, '6.png'):
     return '6'
-  if contains_subimage(img, './test/7.png'):
+  if contains_subimage(img, '7.png'):
     return '7'
-  if contains_subimage(img, './test/8.png'):
+  if contains_subimage(img, '8.png'):
     return '8'
-  if contains_subimage(img, './test/a.png'):
+  if contains_subimage(img, 'a.png'):
     return 'ace'
   #hmm. Jack requires confidence level 0.7 to detect. Don't quite know why.
-  if contains_subimage(img, './test/j.png'):
+  if contains_subimage(img, 'j.png'):
     return 'jack'
-  if contains_subimage(img, './test/k.png'):
+  if contains_subimage(img, 'k.png'):
     return 'king'
   return 'unknown'
 
 
 def main():
-  img = cv2.imread('./test/poker.jpg', cv2.CV_LOAD_IMAGE_GRAYSCALE)
+  img = cv2.imread('poker.jpg', cv2.CV_LOAD_IMAGE_GRAYSCALE)
   cards = ar.find_by_ar(img, 0.7, 0.02,min_height=100,min_width=50)
   if not cards:
     print 'Sorry, couldn\'t find any cards in the provided image.'
