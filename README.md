@@ -40,3 +40,26 @@ subimage-find-aspect-ratio poker.jpg --aspect 0.7 --error 0.02 -v
 ```
 The above command generated output as below (cards in the image are of aspect ratio 0.7+/-0.03).Found instances of graphical element with the required aspect ratio are outlined in RED.
 ![subimage find ar results image](test/poker.jpg.locations.png "Example subimage-find-aspect-ratio results of above command.")
+
+
+Example Test
+============
+There's a simple image recognition style test in the subimage/test director entitled 'test01.py'. This script examines local (only) files to do simple recognition of poker cards. An example run follows:
+```
+(subimage_test)joneil@joneilDesktop ~/code/subimage/test $ ./test01.py 
+Card found at 1021,113: diamond 6
+Card found at 1048,119: heart ace
+Card found at 424,242: heart 2
+Card found at 514,242: club 6
+Card found at 604,242: spade 8
+Card found at 694,242: diamond jack
+Card found at 784,242: spade king
+Card found at 1139,319: diamond 7
+Card found at 1166,325: club 7
+```
+This correctly identifies the cards in the above poker image example.
+
+Status
+======
+I put together this code just as a proof of concept. Besides checking if it runs on my current system once or twice a year I'm not really maintaining it.
+TBH, i'd really like to remove the OpenCV dependency, which should be possible, but haven't done it yet.
