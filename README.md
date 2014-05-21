@@ -12,6 +12,8 @@ To install, point pip to this github:
 ```
 pip install git+https://github.com/johnoneil/subimage
 ```
+Pip should manage dependencies nicely as of version 0.2. ~~However~~ the openCV package (cv2) is not properly pacckage managed. Installation by hand is necessary, and that's outside the cope of this doc.
+An example is: [here](https://web.archive.org/web/20130620145414/http://www.neuroforge.co.uk/index.php/getting-started-with-python-a-opencv)
 
 Command Line Tools
 ==================
@@ -34,7 +36,7 @@ subimage-find-aspect-ratio
 ==========================
 Fid graphical elements (really connected components) within a primary image by their rectangular bounding box aspect ratio. Invoked in the form:
 ```
-subimage-find-aspect-ratio poker.jpg --aspect 0.7 --error 0.03 -v
+subimage-find-aspect-ratio poker.jpg --aspect 0.7 --error 0.02 -v
 ```
 The above command generated output as below (cards in the image are of aspect ratio 0.7+/-0.03).Found instances of graphical element with the required aspect ratio are outlined in RED.
 ![subimage find ar results image](test/poker.jpg.locations.png "Example subimage-find-aspect-ratio results of above command.")

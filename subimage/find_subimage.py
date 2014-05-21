@@ -16,11 +16,18 @@ import numpy as np
 import scipy.ndimage as sp
 import scipy.misc as misc
 import scipy.signal as signal
-import cv2
 import math
 import sys
 import argparse
 import os
+
+#cv2 is not well package managed, so we bail if it's not present
+try:
+  import cv2
+except ImportError as e:
+  print 'Could not import cv2. Please install current version of opencv and python binding.'
+  print 'This message is provided because opencv is not managed via pypi (pip install) package mgr.'
+  raise e
 
 
 def find_subimages(primary, subimage, confidence=0.80):
@@ -60,7 +67,7 @@ def get_connected_components(image):
   objects = sp.measurements.find_objects(labels)
   return objects
 
-def draw_bounding_boxes(img,connected_components,max_size=0,min_size=0,color=(255,0,0),line_size=2):
+def draw_bounding_boxes(img,connected_components,max_size=0,min_size=0,color=(0,0,255),line_size=2):
   for component in connected_components:
     if min_size > 0 and area_bb(component)**0.5<min_size: continue
     if max_size > 0 and area_bb(component)**0.5>max_size: continue
@@ -68,9 +75,9 @@ def draw_bounding_boxes(img,connected_components,max_size=0,min_size=0,color=(25
     cv2.rectangle(img,(xs.start,ys.start),(xs.stop,ys.stop),color,line_size)
 
 def save_output(infile, outfile, connected_components):
-  img = sp.imread(infile)
+  img = cv2.imread(infile)
   draw_bounding_boxes(img, connected_components)
-  misc.imsave(outfile, img) 
+  cv2.imwrite(outfile, img)
 
 def  find_subimages_from_files(primary_image_filename, subimage_filename, confidence):
   '''

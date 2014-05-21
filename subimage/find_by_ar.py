@@ -79,7 +79,7 @@ def get_connected_components(image):
   objects = sp.measurements.find_objects(labels)
   return objects
 
-def draw_bounding_boxes(img,connected_components,color=(255,0,0),line_size=2):
+def draw_bounding_boxes(img,connected_components,color=(0,0,255),line_size=2):
   for component in connected_components:
     x = component.x
     y = component.y
@@ -88,9 +88,9 @@ def draw_bounding_boxes(img,connected_components,color=(255,0,0),line_size=2):
     cv2.rectangle(img,(x, y), (x+w, y+h), color, line_size)
 
 def save_output(infile, outfile, connected_components):
-  img = sp.imread(infile)
+  img = cv2.imread(infile)
   draw_bounding_boxes(img, connected_components)
-  misc.imsave(outfile, img) 
+  cv2.imwrite(outfile, img)
 
 def  find_by_ar_from_files(infile, ar, error):
   img = cv2.imread(infile, cv2.CV_LOAD_IMAGE_GRAYSCALE)
