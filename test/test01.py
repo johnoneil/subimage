@@ -12,6 +12,8 @@ DATE: Saturday, Sept 21st 2014
 
 """
 
+import os
+import sys
 import subimage.find_by_ar as ar
 import subimage.find_subimage as si
 import cv2
@@ -54,6 +56,10 @@ def get_value(img):
 
 
 def main():
+  if not os.path.exists('poker.jpg'):
+    print 'ERROR: This is a simple test meant to be run on local files. Please run from the subimage/test directory.'
+    sys.exit(-1)
+
   img = cv2.imread('poker.jpg', cv2.CV_LOAD_IMAGE_GRAYSCALE)
   cards = ar.find_by_ar(img, 0.7, 0.02,min_height=100,min_width=50)
   if not cards:
