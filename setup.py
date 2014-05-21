@@ -4,8 +4,12 @@ def readme():
     with open('README.md') as f:
         return f.read()
 
+def requirements():
+  with open('requirements.txt') as f:
+    return f.read().splitlines()
+
 setup(name='subimage',
-    version='0.1',
+    version='0.2',
     description='Find images within other images.',
     long_description = readme(),
 	classifiers=[
@@ -20,11 +24,7 @@ setup(name='subimage',
     author_email='oneil.john@gmail.com',
     license='MIT',
     packages=['subimage'],
-    install_requires=[
-        'numpy',
-        'scipy',
-        'argparse'
-      ],
+    install_requires = requirements(),
     entry_points = {
 		'console_scripts': [
 			'subimage-find-aspect-ratio=subimage.find_by_ar:main',
