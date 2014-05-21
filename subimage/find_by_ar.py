@@ -19,11 +19,18 @@ import numpy as np
 import scipy.ndimage as sp
 import scipy.misc as misc
 import scipy.signal as signal
-import cv2
 import math
 import sys
 import argparse
 import os
+
+#cv2 is not well package managed, so we bail if it's not present
+try:
+  import cv2
+except ImportError as e:
+  print 'Could not import cv2. Please install current version of opencv and python binding.'
+  print 'This message is provided because opencv is not managed via pypi (pip install) package mgr.'
+  raise e
 
 class ConnectedComponent(object):
   def __init__(self, slices, mask):
