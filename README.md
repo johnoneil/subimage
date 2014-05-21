@@ -12,8 +12,8 @@ To install, point pip to this github:
 ```
 pip install git+https://github.com/johnoneil/subimage
 ```
-Pip should manage dependencies nicely as of version 0.2. ~~However~~ the openCV package (cv2) is not properly pacckage managed. Installation by hand is necessary, and that's outside the cope of this doc.
-An example is: [here](https://web.archive.org/web/20130620145414/http://www.neuroforge.co.uk/index.php/getting-started-with-python-a-opencv)
+Pip should manage dependencies nicely as of version 0.2. **However the openCV package (cv2) is not properly pacckage managed. CV2 (opencv library bindings for python, version 2) Installation by hand is necessary, and that's outside the cope of this doc.**
+An example is [here](https://web.archive.org/web/20130620145414/http://www.neuroforge.co.uk/index.php/getting-started-with-python-a-opencv)
 
 Command Line Tools
 ==================
